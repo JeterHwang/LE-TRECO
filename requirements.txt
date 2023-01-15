@@ -1,0 +1,6 @@
+torch==1.11.0
+numba
+scipy
+Bio
+scikit-learn
+pandas
