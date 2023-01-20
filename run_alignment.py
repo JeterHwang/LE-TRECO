@@ -13,7 +13,6 @@ import torch
 import torch.nn.functional as F
 from tqdm import tqdm
 import sys
-from esm.esm import pretrained
 from src import Embedding
 from src import LSTMDataset
 from Bio import SeqIO
