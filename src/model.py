@@ -3,10 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.utils.rnn import PackedSequence
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
-from collections import OrderedDict
-import math
-import logging
-import numpy as np
+from .esm import pretrained
 
 class Embedding(nn.Module):
     def __init__(
