@@ -361,7 +361,7 @@ def parse_args() -> Namespace:
     # eval
     parser.add_argument("--toks_per_batch_eval", type=int, default=16384)
     parser.add_argument("--newick2mafft_path", type=Path, default="./newick2mafft.rb")
-    parser.add_argument("--fastSP_path", type=Path, default="./FastSP/FastSP.jar")
+    parser.add_argument("--fastSP_path", type=Path, default="./FastSP-1.7.1/FastSP.jar")
     parser.add_argument("--align_prog", type=str, default='clustalo', choices=["clustalo", "mafft", "famsa", "tcoffee"])
 
     parser.add_argument("--dist_type", type=str, default="NW", choices=["NW", "SW"])
