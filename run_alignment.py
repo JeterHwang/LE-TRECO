@@ -182,12 +182,12 @@ def eval_Kmeans(model, args):
             dataset = LSTMDataset([seq['seq'] for seq in unique_sorted_seqs])
         eval_loader = torch.utils.data.DataLoader(
             dataset,
-            batch_size=128,
+            batch_size=args.batch_size,
             collate_fn=dataset.collate_fn,
             pin_memory=True,
             # batch_sampler=dataset.batch_sampler(args.toks_per_batch_eval),
             shuffle=False,
-            num_workers=8,
+            num_workers=args.num_workers,
         )
         ## Create Embeddings
         embeddings, index = [], []
@@ -202,7 +202,7 @@ def eval_Kmeans(model, args):
             unique_sorted_seqs[idx]['embedding'] = emb
         logging.info(f"Finish embedding in {time.time() - start_time} secs.")
         
-        centers, clusters = BisectingKmeans(unique_sorted_seqs)
+        centers, clusters = BisectingKmeans(unique_sorted_seqs, args.min_cluster_size)
         logging.info(f"Cluster Sizes : {[len(cl) for cl in clusters]}")
         if len(centers) > 1:
             center_embeddings = torch.stack([cen['embedding'] for cen in centers], dim=0)
@@ -355,7 +355,9 @@ def parse_args() -> Namespace:
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument("--thread", type=int, default=8)
     parser.add_argument('--embed_type', type=str, default='LSTM', choices=['LSTM', 'esm-43M', 'esm-35M', 'esm-150M', 'esm-650M'])
-    
+    parser.add_argument("--min_cluster_size", type=int, default=500)
+    parser.add_argument("--batch_size", type=int, default=64)
+    parser.add_argument("--num_workers", type=int, default=8)
     # eval
     parser.add_argument("--toks_per_batch_eval", type=int, default=16384)
     parser.add_argument("--newick2mafft_path", type=Path, default="./newick2mafft.rb")
