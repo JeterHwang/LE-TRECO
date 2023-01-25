@@ -12,8 +12,7 @@ import numpy as np
 import subprocess
 from subprocess import PIPE
 from scipy.stats import pearsonr, spearmanr
-from gmm import GMM_Batch
-from kmeans_pytorch import kmeans
+from .kmeans_pytorch import kmeans
 import logging
 BIG_DIST = 1000000000
 

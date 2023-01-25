@@ -1,5 +1,5 @@
 import torch
-from alphabets import Uniprot21
+from .alphabets import Uniprot21
 from torch.nn.utils.rnn import pad_sequence
 
 class LSTMDataset:

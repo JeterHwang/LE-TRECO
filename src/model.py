@@ -48,9 +48,8 @@ class Embedding(nn.Module):
             model.load_state_dict(state_dict)
         
         model = Embedding(
-            21, 
-            hidden_dim, 
-            num_layers, 
+            embed_type,
+            num_layers,
             model,
             esm_alphabet
         )
@@ -70,8 +69,8 @@ class Embedding(nn.Module):
 
     def forward(self, x, length):
         if 'esm' in self.embed_type:
-            results = self.model(x, repr_layers=[self.repr_layers], return_contacts=False)
-            hs = results["representations"][self.repr_layers][:,1:,:]
+            results = self.model(x, repr_layers=[self.num_layers], return_contacts=False)
+            hs = results["representations"][self.num_layers][:,1:,:]
         else:
             one_hot = self.to_one_hot(x)
             h_ = pack_padded_sequence(one_hot, length, batch_first=True, enforce_sorted=False)

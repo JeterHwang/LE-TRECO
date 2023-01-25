@@ -352,6 +352,7 @@ def parse_args() -> Namespace:
 
     # training
     parser.add_argument("--gpu", type=str, default="0")
+    parser.add_argument('--seed', type=int, default=0)
     parser.add_argument("--thread", type=int, default=8)
     parser.add_argument('--embed_type', type=str, default='LSTM', choices=['LSTM', 'esm-43M', 'esm-35M', 'esm-150M', 'esm-650M'])
     

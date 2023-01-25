@@ -11,7 +11,6 @@ from pathlib import Path
 
 import torch
 
-import esm
 from .model.esm2 import ESM2
 from .data import Alphabet
 
@@ -22,10 +21,7 @@ def _has_regression_weights(model_name):
 
 
 def load_model_and_alphabet(model_name):
-    if model_name.endswith(".pt"):  # treat as filepath
-        return load_model_and_alphabet_local(model_name)
-    else:
-        return load_model_and_alphabet_hub(model_name)
+    load_model_and_alphabet_local(model_name)
 
 
 def load_hub_workaround(url):

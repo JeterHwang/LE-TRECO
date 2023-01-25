@@ -9,6 +9,7 @@ apt -y install r-cran-rocr
 apt -y install libboost-all-dev
 apt -y install libblas-dev liblapack-dev
 apt -y install gfortran
+apt -y install libargtable2-dev
 
 cd /usr/local
 wget http://ftp.gnu.org/gnu/glibc/glibc-2.29.tar.gz
