@@ -5,6 +5,8 @@ from torch.nn.utils.rnn import PackedSequence
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from .esm import pretrained
 
+nin = 21
+
 class Embedding(nn.Module):
     def __init__(
         self, 
@@ -38,7 +40,7 @@ class Embedding(nn.Module):
         else:
             num_layers, hidden_dim = 3, 1024
             model, esm_alphabet = nn.LSTM(
-                21,
+                nin,
                 hidden_dim,
                 num_layers,
                 batch_first=True,
@@ -59,11 +61,11 @@ class Embedding(nn.Module):
     def to_one_hot(self, x):
         packed = type(x) is PackedSequence
         if packed:
-            one_hot = x.data.new(x.data.size(0), self.nin).float().zero_()
+            one_hot = x.data.new(x.data.size(0), nin).float().zero_()
             one_hot.scatter_(1, x.data.unsqueeze(1), 1)
             one_hot = PackedSequence(one_hot, x.batch_sizes)
         else:
-            one_hot = x.new(x.size(0), x.size(1), self.nin).float().zero_()
+            one_hot = x.new(x.size(0), x.size(1), nin).float().zero_()
             one_hot.scatter_(2, x.unsqueeze(2), 1)
         return one_hot
 

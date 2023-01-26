@@ -244,7 +244,7 @@ def eval_Kmeans(model, args):
             pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
             runcmd(f"famsa -keep-duplicates -t {args.thread} -gt import {tree_path.absolute().resolve()} {fastaFile.absolute().resolve()} {pfa_path.absolute().resolve()}")
         else:
-            pfa_path = fastaFile.parent / f"{fastaFile.stem.split('_')[0]}_tcoffeeNN.fasta" if 'ContTest' in args.eval_dataset else args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
             runcmd(f"t_coffee -reg -thread {args.thread} -child_thread {args.thread} -seq {fastaFile.absolute().resolve()} -nseq {min(200, num_seqs // 10)} -tree {tree_path.absolute().resolve()} -method mafftgins1_msa -outfile {pfa_path.absolute().resolve()}")
 
         ## Calculate Score
