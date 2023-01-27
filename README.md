@@ -115,7 +115,7 @@ wget https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-cont
 
 ## Usage
 `python run_alignment.py [options]`
-### Arguments
+### Options
 - Commonly used options
     * `--input <file/folder>`- Specify the inpout protein sequence file or the folder contains multiple files. Once a folder is given, all files ending with .tfa will be aligned.
     * `--ref <file/folder>`- Specify the reference alignment fasta file or the folder contain multiple reference alignments. Notice that it should be the same type with input (i.e. if a file is given as input, only a file is allowed for this argument)
@@ -135,8 +135,14 @@ wget https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-cont
     * `--seed <integer>`- Specify the seed for Pytorch, numpy, and random
     * `--thread <integer>`- Specify how many threads the MSA program (e.g. famsa) should work on
     * `--max_cluster_size <integer>`- Specify the threshold for the Bi-secting K-means++ algorithm
-    * `--batch_size <integer>`- Specify the batch size for inference
+    * `--batch_size <integer>`- Specify the batch size for inference, the recommended batch size for LSTM is 64, and 16 for transformers
     * `--num_workers <integer>`- Specify the thread for Pytorch dataLoader
     * `--newick2mafft_path <path to newick2mafft.rb>`- Specify the path to newick2mafft.rb, which is used to convert guide tree format for MAFFT
     * `--fastSP_path <path to FastSP.jar>`- Specify the path to FastSP.jar, which is used to evaluate the final alignment
 
+## Run the code
+Here we provide an example for homfam/small dataset, which uses 3-layer BiLSTM for embedding sequences and MAFFT for final alignment
+
+``` python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --model_path ./ckpt/LSTM.pt --embed_type LSTM --align_prog mafft ```
+
+## Results
