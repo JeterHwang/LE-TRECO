@@ -137,8 +137,11 @@ unzip homfam.zip
 rm homfam.zip
 ```
 ### extHomFam-v2
+One can download the ContTest dataset from the Google drive link: [extHomFam-v2.zip](https://drive.google.com/file/d/1JEdegu9ktyzJrel9hexDmmxiFos6Nb-B/view?usp=sharing) or type the following command in the terminal.
 ```
-
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1JEdegu9ktyzJrel9hexDmmxiFos6Nb-B' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1JEdegu9ktyzJrel9hexDmmxiFos6Nb-B" -O extHomFam-v2.zip && rm -rf /tmp/cookies.txt
+unzip extHomFam-v2.zip
+rm extHomFam-v2.zip
 ```
 ### ContTest
 One can download the ContTest dataset from the Google drive link: [ContTest.zip](https://drive.google.com/file/d/1XwcPso7c8UwBVORjRuUqW9Qi6mhSgS5P/view?usp=sharing) 
@@ -175,7 +178,7 @@ rm ContTest.zip
     * `--newick2mafft_path <path to newick2mafft.rb>`- Specify the path to newick2mafft.rb, which is used to convert guide tree format for MAFFT
     * `--fastSP_path <path to FastSP.jar>`- Specify the path to FastSP.jar, which is used to evaluate the final alignment
 
-## Run the code
+## Examples
 Here we provide an example for homfam/small dataset, which uses 3-layer BiLSTM for embedding sequences and MAFFT for final alignment
 
 ``` 
@@ -190,4 +193,3 @@ If pure mafft is desired (do not use LE-TRECO), one can type the command below
 python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --align_prog mafft --no_tree
 ```
 ## Citation
-
