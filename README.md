@@ -4,10 +4,20 @@ an Lstm-based Embedding Method for
 the TREe COnstruction Step in Multiple Sequence
 Alignment
 
-## Algorithm
+## Guide Tree Construction Workflow
 ![LE-TRECO Architecture](https://i.imgur.com/B7LCmiG.png)
 
-## Results
+- ***Sequence Embedding***:
+Embed protein sequences into vector representations by ML models
+- ***Pre-Clustering***:
+Divide the sequences into small clusters with bi-secting K-means++ and traditional K-means++
+- ***Sub Guide Tree Constructions***:
+Construct guide tree for each cluster with the Needleman-Wunsch and UPGMA algorithms 
+- ***Merge Guide Trees***
+Merge all guide trees into one guide tree with the UPGMA algorithm
+
+## Performance on Large Protein Datasets
+We replace the guide tree construction step of MAFFT, Clusta Omega, FAMSA, and T-Coffee with our algorithm and evaluate the MSA produced by these programs. The results show a significant boost on SP and TC scores if LE-TRECO is applied.
 
 HomFam             |  extHomFam-v2
 :-------------------------:|:-------------------------:
@@ -179,4 +189,5 @@ If pure mafft is desired (do not use LE-TRECO), one can type the command below
 ```
 python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --align_prog mafft --no_tree
 ```
-## Results
+## Citation
+
