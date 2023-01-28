@@ -5,7 +5,13 @@ the TREe COnstruction Step in Multiple Sequence
 Alignment
 
 ## Algorithm
-![](https://i.imgur.com/B7LCmiG.png)
+![LE-TRECO Architecture](https://i.imgur.com/B7LCmiG.png)
+
+## Results
+
+HomFam             |  extHomFam-v2
+:-------------------------:|:-------------------------:
+![](https://i.imgur.com/QnajkKm.png) | ![](https://i.imgur.com/YPKhxE5.png)
 
 
 ## Environment Setup
