@@ -4,6 +4,10 @@ an Lstm-based Embedding Method for
 the TREe COnstruction Step in Multiple Sequence
 Alignment
 
+## Algorithm
+![](https://i.imgur.com/B7LCmiG.png)
+
+
 ## Environment Setup
 ### Install Linux Packages
 ```
@@ -103,21 +107,37 @@ wget https://dl.fbaipublicfiles.com/fair-esm/models/esm2_t33_650M_UR50D.pt
 wget https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-contact-regression.pt
 ```
 ### 3-layer BiLSTM
+Google drive link: [LSTM.pt](https://drive.google.com/file/d/1Y_bHIuRaJeqlM0V5ko29Pb6YGWHJegoq/view?usp=share_link)
 ```
-
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Y_bHIuRaJeqlM0V5ko29Pb6YGWHJegoq' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1Y_bHIuRaJeqlM0V5ko29Pb6YGWHJegoq" -O LSTM.pt && rm -rf /tmp/cookies.txt
 ```
-## Download Dataset
+## Download Datasets
 ### HomFam
-
+One can download the ContTest dataset from the Google drive link: [homfam.zip](https://drive.google.com/file/d/1oRAOd4rCM8Yur_SwIJivzftKv9F5s9ae/view?usp=share_link) 
+or type the following command in the terminal.
+```
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1oRAOd4rCM8Yur_SwIJivzftKv9F5s9ae' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1oRAOd4rCM8Yur_SwIJivzftKv9F5s9ae" -O homfam.zip && rm -rf /tmp/cookies.txt
+unzip homfam.zip
+rm homfam.zip
+```
 ### extHomFam-v2
+```
 
+```
 ### ContTest
-
+One can download the ContTest dataset from the Google drive link: [ContTest.zip](https://drive.google.com/file/d/1XwcPso7c8UwBVORjRuUqW9Qi6mhSgS5P/view?usp=sharing) 
+or type the following command in the terminal.
+```
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1XwcPso7c8UwBVORjRuUqW9Qi6mhSgS5P' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1XwcPso7c8UwBVORjRuUqW9Qi6mhSgS5P" -O ContTest.zip && rm -rf /tmp/cookies.txt
+unzip ContTest.zip
+rm ContTest.zip
+```
 ## Usage
 `python run_alignment.py [options]`
 ### Options
 - Commonly used options
     * `--input <file/folder>`- Specify the inpout protein sequence file or the folder contains multiple files. Once a folder is given, all files ending with .tfa will be aligned.
+    * `--msf_dir <path to a folder>`- Specify a folder to place final MSA sequence files (default: ./msf)
     * `--ref <file/folder>`- Specify the reference alignment fasta file or the folder contain multiple reference alignments. Notice that it should be the same type with input (i.e. if a file is given as input, only a file is allowed for this argument)
     * `--model_path <path to a .pt file>`- Specify the path to the pretrained model
     * `--embed_type <LSTM|esm-43M|esm35M|esm-150M|esm-650M>`- Specify which embedding model to use
@@ -128,7 +148,6 @@ wget https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-cont
 
 - Other options
     * `--tree_dir <path to a folder>`- Specify a folder to place guide trees (default: ./trees)
-    * `--msf_dir <path to a folder>`- Specify a folder to place final MSA sequence files (default: ./msf)
     * `--fasta_dir <path to a folder>`- Specify a folder to place temporary fasta files (default: ./fasta)
     * `--log_dir <path to a folder>`- Specify a folder to place outputed logs (default: ./logs)
     * `--gpu <gpu index>`- Specify which gpu to work on
@@ -143,6 +162,15 @@ wget https://dl.fbaipublicfiles.com/fair-esm/regression/esm2_t33_650M_UR50D-cont
 ## Run the code
 Here we provide an example for homfam/small dataset, which uses 3-layer BiLSTM for embedding sequences and MAFFT for final alignment
 
-``` python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --model_path ./ckpt/LSTM.pt --embed_type LSTM --align_prog mafft ```
-
+``` 
+python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --model_path ./ckpt/LSTM.pt --embed_type LSTM --align_prog mafft 
+```
+change 3-layer BiLSTM to esm-650M transformer by the command below
+```
+python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --model_path ./ckpt/esm2_t33_650M_UR50D.pt --embed_type esm-650M --align_prog mafft 
+```
+If pure mafft is desired (do not use LE-TRECO), one can type the command below
+```
+python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --align_prog mafft --no_tree
+```
 ## Results
