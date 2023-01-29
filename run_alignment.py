@@ -62,19 +62,19 @@ def eval_prog(args):
         raw_seqs = list(SeqIO.parse(fastaFile, 'fasta'))
         ## Alignment
         if args.align_prog == "clustalo":
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_clustalo.fasta"
             runcmd(f"./clustalo --threads={args.thread} --in {fastaFile.absolute().resolve()} --out {pfa_path.absolute().resolve()} --force")
         elif args.align_prog == "mafft":
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_mafft.fasta"
             ret = runcmd(f"./mafft --large --anysymbol --thread {args.thread} {fastaFile.absolute().resolve()}").decode().split('\n')
             with open(pfa_path, 'w') as f:
                 for line in ret:
                     f.write(line + '\n')
         elif args.align_prog == "famsa":
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_famsa.fasta"
             runcmd(f"famsa -keep-duplicates -gt upgma -t {args.thread} {fastaFile.absolute().resolve()} {pfa_path.absolute().resolve()}")
         else:
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_tcoffee.fasta"
             runcmd(f"t_coffee -reg -thread {args.thread} -child_thread {args.thread} -seq {fastaFile.absolute().resolve()} -nseq {min(200, len(raw_seqs) // 10)} -tree mbed -method mafftginsi_msa -outfile {pfa_path.absolute().resolve()}")
         
         ## Calculate Score
@@ -83,7 +83,7 @@ def eval_prog(args):
         else:
             rfa_path = args.ref
 
-        rfa_pfa_path = args.msf_dir / f"{fastaFile.stem}_rfa.pfa"
+        rfa_pfa_path = args.rfa_dir / f"{fastaFile.stem}_rfa.fasta"
         rfa_raw = list(SeqIO.parse(rfa_path, 'fasta'))
         pfa_raw = list(SeqIO.parse(pfa_path, 'fasta'))
         seq_in_ref = [str(ss.id) for ss in rfa_raw]
@@ -95,8 +95,8 @@ def eval_prog(args):
                     f.write(f">{seq_name}\n")
                     f.write(f"{seq_data}\n")
         raw_scores = runcmd(f"java -jar {args.fastSP_path.absolute().resolve()} -r {rfa_path.absolute().resolve()} -e {rfa_pfa_path.absolute().resolve()}").decode().split()
-        SP = float(raw_scores[raw_scores.index('SP-Score') + 1])
-        TC = float(raw_scores[raw_scores.index('TC') + 1])
+        SP = float(raw_scores[raw_scores.index('SP-Score') + 1]) * 100
+        TC = float(raw_scores[raw_scores.index('TC') + 1]) * 100
         
         logging.info(f"SP-score = {SP}")
         logging.info(f"TC = {TC}")
@@ -112,7 +112,7 @@ def eval_prog(args):
     }
     return final_result
 
-def eval_Kmeans(model, args):
+def eval_LETRECO(model, args):
     result = {
         'SP' : [],
         'TC' : []
@@ -202,7 +202,7 @@ def eval_Kmeans(model, args):
             unique_sorted_seqs[idx]['embedding'] = emb
         logging.info(f"Finish embedding in {time.time() - start_time} secs.")
         
-        centers, clusters = BisectingKmeans(unique_sorted_seqs, args.min_cluster_size)
+        centers, clusters = BisectingKmeans(unique_sorted_seqs, args.max_cluster_size)
         logging.info(f"Cluster Sizes : {[len(cl) for cl in clusters]}")
         if len(centers) > 1:
             center_embeddings = torch.stack([cen['embedding'] for cen in centers], dim=0)
@@ -227,11 +227,11 @@ def eval_Kmeans(model, args):
         #############################
         ## Alignment
         if args.align_prog == "clustalo":
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_clustaloLE.fasta"
             runcmd(f"./clustalo --threads={args.thread} --in {fastaFile.absolute().resolve()} --out {pfa_path.absolute().resolve()} --guidetree-in {tree_path.absolute().resolve()} --force")
         elif args.align_prog == "mafft":
             mafft_path = args.tree_dir / f"{fastaFile.stem}_mafft.dnd"
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_mafftLE.fasta"
             ret = runcmd(f"./newick2mafft.rb {tree_path.absolute().resolve()}").decode().split('\n')
             with open(mafft_path, 'w') as f:
                 for line in ret:
@@ -241,10 +241,10 @@ def eval_Kmeans(model, args):
                 for line in ret:
                     f.write(line + '\n')
         elif args.align_prog == "famsa":
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_famsaLE.fasta"
             runcmd(f"famsa -keep-duplicates -t {args.thread} -gt import {tree_path.absolute().resolve()} {fastaFile.absolute().resolve()} {pfa_path.absolute().resolve()}")
         else:
-            pfa_path = args.msf_dir / f"{fastaFile.stem}.pfa"
+            pfa_path = args.msf_dir / f"{fastaFile.stem}_tcoffee.fasta"
             runcmd(f"t_coffee -reg -thread {args.thread} -child_thread {args.thread} -seq {fastaFile.absolute().resolve()} -nseq {min(200, num_seqs // 10)} -tree {tree_path.absolute().resolve()} -method mafftgins1_msa -outfile {pfa_path.absolute().resolve()}")
 
         ## Calculate Score
@@ -253,7 +253,7 @@ def eval_Kmeans(model, args):
         else:
             rfa_path = args.ref
 
-        rfa_pfa_path = args.msf_dir / f"{fastaFile.stem}_rfa.pfa"
+        rfa_pfa_path = args.rfa_dir / f"{fastaFile.stem}_rfa.fasta"
         rfa_raw = list(SeqIO.parse(rfa_path, 'fasta'))
         pfa_raw = list(SeqIO.parse(pfa_path, 'fasta'))
         seq_in_ref = [str(ss.id) for ss in rfa_raw]
@@ -265,8 +265,8 @@ def eval_Kmeans(model, args):
                     f.write(f">{seq_name}\n")
                     f.write(f"{seq_data}\n")
         raw_scores = runcmd(f"java -jar {args.fastSP_path.absolute().resolve()} -r {rfa_path.absolute().resolve()} -e {rfa_pfa_path.absolute().resolve()}").decode().split()
-        SP = float(raw_scores[raw_scores.index('SP-Score') + 1])
-        TC = float(raw_scores[raw_scores.index('TC') + 1])
+        SP = float(raw_scores[raw_scores.index('SP-Score') + 1]) * 100
+        TC = float(raw_scores[raw_scores.index('TC') + 1]) * 100
         
         logging.info(f"SP-score = {SP}")
         logging.info(f"TC = {TC}")
@@ -293,16 +293,22 @@ def main(args):
     if args.no_tree:
         result = eval_prog(args)
     else: 
-        result = eval_Kmeans(
+        result = eval_LETRECO(
             model,
             args
         )
     
     logging.info(f"============== Guide Tree Evaluation ==============")
     logging.info(f"SP\t\tTC")
-    logging.info(f"{round(result['SP'] * 100, 1)}\t\t{round(result['TC'] * 100, 1)}")        
+    logging.info(f"{round(result['SP'] * 100, 1)}\t\t{round(result['TC'], 1)}")        
     logging.info(f"Total Execution Time : {time.time() - tot_start_time} (s)")
     logging.info(f"===================================================")
+
+    print(f"============== Guide Tree Evaluation ==============")
+    print(f"SP\t\tTC")
+    print(f"{round(result['SP'] * 100, 1)}\t\t{round(result['TC'], 1)}")        
+    print(f"Total Execution Time : {time.time() - tot_start_time} (s)")
+    print(f"===================================================")
     
 
 def parse_args() -> Namespace:
@@ -338,6 +344,12 @@ def parse_args() -> Namespace:
         default="./msf",
     )
     parser.add_argument(
+        "--rfa_dir",
+        type=Path,
+        help="Directory to save the rfa files.",
+        default="./rfa",
+    )
+    parser.add_argument(
         "--fasta_dir",
         type=Path,
         help="Directory to save the model file.",
@@ -355,7 +367,7 @@ def parse_args() -> Namespace:
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument("--thread", type=int, default=8)
     parser.add_argument('--embed_type', type=str, default='LSTM', choices=['LSTM', 'esm-43M', 'esm-35M', 'esm-150M', 'esm-650M'])
-    parser.add_argument("--min_cluster_size", type=int, default=500)
+    parser.add_argument("--max_cluster_size", type=int, default=500)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=8)
     # eval
@@ -364,7 +376,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--fastSP_path", type=Path, default="./FastSP-1.7.1/FastSP.jar")
     parser.add_argument("--align_prog", type=str, default='clustalo', choices=["clustalo", "mafft", "famsa", "tcoffee"])
 
-    parser.add_argument("--dist_type", type=str, default="NW", choices=["NW", "SW"])
+    # parser.add_argument("--dist_type", type=str, default="NW", choices=["NW", "SW"])
     parser.add_argument("--no_tree", action='store_true')
     args = parser.parse_args()
     return args
@@ -374,14 +386,15 @@ if __name__ == "__main__":
     args = parse_args()
     args.tree_dir.mkdir(parents=True, exist_ok=True)
     args.msf_dir.mkdir(parents=True, exist_ok=True)
+    args.rfa_dir.mkdir(parents=True, exist_ok=True)
     args.fasta_dir.mkdir(parents=True, exist_ok=True)
     args.log_dir.mkdir(parents=True, exist_ok=True)
     os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     if args.no_tree:
-        log_filename = args.log_dir / datetime.datetime.now().strftime(f"{args.align_prog}_{args.embed_type}_{args.dist_type}_%Y-%m-%d_%H_%M_%S.log")
+        log_filename = args.log_dir / datetime.datetime.now().strftime(f"{args.align_prog}_{args.embed_type}_%Y-%m-%d_%H_%M_%S.log")
     else:
-        log_filename = args.log_dir / datetime.datetime.now().strftime(f"mix_{args.align_prog}_{args.embed_type}_{args.dist_type}_%Y-%m-%d_%H_%M_%S.log")        
+        log_filename = args.log_dir / datetime.datetime.now().strftime(f"mix_{args.align_prog}_{args.embed_type}_%Y-%m-%d_%H_%M_%S.log")        
     logging.basicConfig(
         level=logging.INFO, 
         filename=log_filename, 
