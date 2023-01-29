@@ -165,7 +165,7 @@ cp src/freecontact /usr/local/bin/
 ```
 2. Compile PSICOV
 ```
-cd fasta2aln
+cd PSICOV/fasta2aln
 cc -O fasta2aln.c -o fasta2aln
 cp fasta2aln /usr/local/bin/
 cd ..
@@ -174,6 +174,7 @@ cp psicov /usr/local/bin/
 ```
 3. scripts
 ```
+cd scripts
 chmod 777 needle.py
 chmod 777 runbenchmark
 chmod 777 calculatescoreL5  
