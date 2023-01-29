@@ -214,7 +214,7 @@ def eval_LETRECO(model, args):
 
         ## UPGMA / Output Guide Tree
         tree_path = args.tree_dir / f"{fastaFile.stem}.dnd"
-        UPGMA_Kmeans(dist_matrix, clusters, id2cluster, tree_path, args.fasta_dir, args.dist_type)
+        UPGMA_Kmeans(dist_matrix, clusters, id2cluster, tree_path, args.fasta_dir, "NW")
         ####### Release Memory ######
         del embeddings              #
         del center_embeddings       #
@@ -371,7 +371,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=8)
     # eval
-    parser.add_argument("--toks_per_batch_eval", type=int, default=16384)
+    # parser.add_argument("--toks_per_batch_eval", type=int, default=16384)
     parser.add_argument("--newick2mafft_path", type=Path, default="./newick2mafft.rb")
     parser.add_argument("--fastSP_path", type=Path, default="./FastSP-1.7.1/FastSP.jar")
     parser.add_argument("--align_prog", type=str, default='clustalo', choices=["clustalo", "mafft", "famsa", "tcoffee"])
