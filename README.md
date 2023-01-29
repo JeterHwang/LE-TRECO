@@ -81,10 +81,10 @@ make
 cp clustalo ../../src/
 ```
 
-### Compile and Install FAMSA v2.0.1
-The folder FAMSA-2.0.1 is the repository cloned from [FAMSA](https://github.com/refresh-bio/FAMSA), and it is of v2.0.1. To make FAMSA work with our code, please follow the commands below.
+### Compile and Install FAMSA v2.1.2
+The folder FAMSA-2.1.2 is the repository cloned from [FAMSA](https://github.com/refresh-bio/FAMSA), and it is of v2.1.2. To make FAMSA work with our code, please follow the commands below.
 ```
-cd FAMSA-2.0.1
+cd FAMSA-2.1.2
 make clean
 make
 cp famsa /usr/local/bin/
