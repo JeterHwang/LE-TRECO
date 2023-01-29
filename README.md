@@ -29,6 +29,7 @@ HomFam             |  extHomFam-v2
 ```
 apt -y update
 apt -y upgrade
+apt -y install git
 apt -y install wget vim
 apt -y install gawk bison
 apt -y install ruby-full default-jdk
