@@ -12,7 +12,7 @@ import numpy as np
 import subprocess
 from subprocess import PIPE
 from scipy.stats import pearsonr, spearmanr
-from .kmeans_pytorch import kmeans
+from .kmeans_plus_plus import kmeans
 import logging
 BIG_DIST = 1000000000
 
@@ -229,9 +229,8 @@ def BisectingKmeans(seqs, min_cluster_size=500):
         cluster_ids, cluster_centers = kmeans(
             X = x,
             num_clusters = cluster_num,
-            distance = 'euclidean',
             device = device,
-            tqdm_flag=False,
+            # tqdm_flag=False,
         )
         
         newCluster = [[] for _ in range(cluster_num)]
@@ -264,9 +263,8 @@ def BisectingKmeans(seqs, min_cluster_size=500):
             X = x,
             num_clusters = len(final_cluster),
             cluster_centers = centers,
-            distance = 'euclidean',
             device = device,
-            tqdm_flag=False,
+            # tqdm_flag=False,
         )
         newCluster = [[] for _ in range(cluster_num)]
         assert len(cluster_ids) == len(clusterPoints)
