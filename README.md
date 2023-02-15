@@ -29,6 +29,7 @@ HomFam             |  extHomFam-v2
 ```
 apt -y update
 apt -y upgrade
+apt -y install git
 apt -y install wget vim
 apt -y install gawk bison
 apt -y install ruby-full default-jdk
@@ -81,10 +82,10 @@ make
 cp clustalo ../../src/
 ```
 
-### Compile and Install FAMSA v2.0.1
-The folder FAMSA-2.0.1 is the repository cloned from [FAMSA](https://github.com/refresh-bio/FAMSA), and it is of v2.0.1. To make FAMSA work with our code, please follow the commands below.
+### Compile and Install FAMSA v2.1.2
+The folder FAMSA-2.1.2 is the repository cloned from [FAMSA](https://github.com/refresh-bio/FAMSA), and it is of v2.1.2. To make FAMSA work with our code, please follow the commands below.
 ```
-cd FAMSA-2.0.1
+cd FAMSA-2.1.2
 make clean
 make
 cp famsa /usr/local/bin/
@@ -151,6 +152,39 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 unzip ContTest.zip
 rm ContTest.zip
 ```
+To use ContTest, please follow the instructions below
+
+1. Compile FreeContact
+```
+cd FreeContact
+chmod +x configure
+./configure --with-boost-libdir=/usr/lib/x86_64-linux-gnu/
+autoreconf -ivf
+make
+cp src/freecontact /usr/local/bin/
+```
+2. Compile PSICOV
+```
+cd PSICOV/fasta2aln
+cc -O fasta2aln.c -o fasta2aln
+cp fasta2aln /usr/local/bin/
+cd ..
+gcc -O3 -march=native -ffast-math -m64 -ftree-vectorize -fopenmp psicov21.c -lm -o psicov
+cp psicov /usr/local/bin/
+```
+3. scripts
+```
+cd scripts
+chmod 777 needle.py
+chmod 777 runbenchmark
+chmod 777 calculatescoreL5  
+chmod 777 labelcontactsev23  
+chmod 777 labelcontactspsi23
+chmod 777 reorderFASTA
+cp needle.py calculatescoreL5 labelcontactsev23 labelcontactspsi23 reorderFASTA runbenchmark /usr/local/bin/
+```
+On evaluation, put the alignments into the same folder as the input fasta files. Then run the command `runbenchmark -a yourmethod` in the folder in which datasets.txt is located. That way, all the family written in datasets.txt will be evaluated. The final scores will be shown in the folder named "results"
+
 ## Usage
 `python run_alignment.py [options]`
 ### Options
@@ -168,6 +202,7 @@ rm ContTest.zip
 - Other options
     * `--tree_dir <path to a folder>`- Specify a folder to place guide trees (default: ./trees)
     * `--fasta_dir <path to a folder>`- Specify a folder to place temporary fasta files (default: ./fasta)
+    * `--rfa_dir <path to a folder>`- Specify a folder to place temporary rfa files (default: ./rfa)
     * `--log_dir <path to a folder>`- Specify a folder to place outputed logs (default: ./logs)
     * `--gpu <gpu index>`- Specify which gpu to work on
     * `--seed <integer>`- Specify the seed for Pytorch, numpy, and random
@@ -192,4 +227,5 @@ If pure mafft is desired (do not use LE-TRECO), one can type the command below
 ```
 python run_alignment.py --input ./data/homfam/small --ref ./data/homfam/small --align_prog mafft --no_tree
 ```
+Once the program terminates, the SP and TC scores will show on the terminal. Besides, one can inspect the execution details in the log files. 
 ## Citation
