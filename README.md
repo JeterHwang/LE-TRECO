@@ -80,6 +80,8 @@ rm esm.zip
 Download mafft-7.490-with-extensions from the [MAFFT source page](https://mafft.cbrc.jp/alignment/software/source.html), and make MAFFT work with our code. Please follow the commands below.
 ```
 wget https://mafft.cbrc.jp/alignment/software/mafft-7.490-with-extensions-src.tgz
+wget https://mafft.cbrc.jp/alignment/software/newick2mafft.rb
+chmod +x newick2mafft.rb
 tar zxvf mafft-7.490-with-extensions-src.tgz
 cd mafft-7.490-with-extensions/core
 make clean
