@@ -61,9 +61,26 @@ ln -sf libm-2.29.so libm.so.6
 ```
 Then check glibc version by the same command.
 
-### Compile MAFFT 7.490
-The folder mafft-7.490-with-extensions is downloaded from the [MAFFT source page](https://mafft.cbrc.jp/alignment/software/source.html). To make MAFFT work with our code, please follow the commands below.
+### Download FastSP
+To enable the evaluation of the MSA against reference alignment, download the FastSP with the following command.
 ```
+git clone https://github.com/smirarab/FastSP.git
+```
+
+### Download esm
+Download the code of [esm](https://github.com/facebookresearch/esm) that is adapted by us to fit our design. Follow the commands below to download the [code](https://drive.google.com/file/d/1cYCictQsOqc4QsuF4kVLH3_eVvJa2Dyl/view?usp=sharing) and place it in the right location.
+```
+cd ./src
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1cYCictQsOqc4QsuF4kVLH3_eVvJa2Dyl' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1cYCictQsOqc4QsuF4kVLH3_eVvJa2Dyl" -O esm.zip && rm -rf /tmp/cookies.txt
+unzip esm.zip
+rm esm.zip
+```
+
+### Compile MAFFT 7.490
+Download mafft-7.490-with-extensions from the [MAFFT source page](https://mafft.cbrc.jp/alignment/software/source.html), and make MAFFT work with our code. Please follow the commands below.
+```
+wget https://mafft.cbrc.jp/alignment/software/mafft-7.490-with-extensions-src.tgz
+tar zxvf mafft-7.490-with-extensions-src.tgz
 cd mafft-7.490-with-extensions/core
 make clean
 make
@@ -72,19 +89,22 @@ cp ../scripts/mafft ../../src/
 ```
 
 ### Compile Clustal Omega 1.2.4
-The folder clustal-omega-1.2.4 is downloaded from the [Clustal Omega homepage](http://www.clustal.org/omega/). To make Clustal Omega work with our code, please follow the commands below.
+Download the source code of clustal-omega-1.2.4 from the [Clustal Omega homepage](http://www.clustal.org/omega/), and make Clustal Omega work with our code. Please follow the commands below.
 ```
+wget http://www.clustal.org/omega/clustal-omega-1.2.4.tar.gz
+tar zxvf clustal-omega-1.2.4.tar.gz
 cd clustal-omega-1.2.4
 ./configure 
 make clean
 make
-
 cp clustalo ../../src/
 ```
 
 ### Compile and Install FAMSA v2.1.2
-The folder FAMSA-2.1.2 is the repository cloned from [FAMSA](https://github.com/refresh-bio/FAMSA), and it is of v2.1.2. To make FAMSA work with our code, please follow the commands below.
+Download the source code of FAMSA-2.1.2 from [FAMSA](https://github.com/refresh-bio/FAMSA), and make FAMSA work with our code. Please follow the commands below.
 ```
+wget https://github.com/refresh-bio/FAMSA/archive/refs/tags/v2.1.2.zip
+unzip v2.1.2.zip
 cd FAMSA-2.1.2
 make clean
 make
